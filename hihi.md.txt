@@ -1,0 +1,81 @@
+{result_code:1,
+ mb_id:'karorok', 
+wr_id:'1', 
+wr_content:'1',
+ wr_name:'김정빈',
+ wr_file:'1', 
+wr_comment:'0',
+ wr_hit:'0',
+ wr_datetime:'2018-02-26 14:10:57',
+ wr_image1:'CU25aEv3RiMV14B.jpeg'
+
+
+
+
+	/*
+	
+	for(int y=0;y<src.rows;y++){
+		for(int x = 0;x<src.cols;x++){
+			int px = (int)(x/rate);
+			int py = (int)(y/rate);
+
+			double fx1 = (double)x/rate - (double)px;
+			double fx2 = 1- fx1;
+			double fy1 = (double)y/rate - (double)py;
+			double fy2 = 1-fy1;
+
+			double w1 = fx2 * fy2;
+			double w2 = fx1 * fy2;
+			double w3 = fx2 * fy1;
+			double w4 = fx1 * fy1;
+
+			uchar p1 = src.at<uchar>(py,px);
+			uchar p2 = src.at<uchar>(py,px+1);
+			uchar p3 = src.at<uchar>(py+1,px);
+			uchar p4 = src.at<uchar>(py+1,px+1);
+			dst.at<uchar>(y,x) = w1 * p1 + w2*p2 + w3*p3 + w4 * p4;
+		}
+	}
+
+	*/
+
+
+
+AIzaSyC_8jpr9koGLavC9GC28zHRZJa8_FmMdKs
+
+
+ private static int GALLERY = 2;
+
+  //function to select a image
+    private void selectImage() {
+        //open album to select image
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, GALLERY);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) { //갤러리에서 가져온 사진.
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == GALLERY) {
+                uri = data.getData();
+                filepath= getPath(uri);
+                MakeLog.Log_d("이미지패스"," == "+filepath);
+                String[] filePath = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(uri, filePath, null, null, null);
+                cursor.moveToFirst();
+                String imagePath = cursor.getString(cursor.getColumnIndex(filePath[0]));
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                image = BitmapFactory.decodeFile(imagePath, options);
+                image = ExifUtils.rotateBitmap(imagePath, image);
+                profile.setScaleType(ImageView.ScaleType.FIT_XY);
+                base64ImageString = imageToString(image);
+                //profile.setImageBitmap(image);
+                insertImageCircle(image);
+                cursor.close();
+
+            } 
+        }
+    }
